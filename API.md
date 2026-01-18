@@ -68,7 +68,7 @@ Complete API reference for the Bootcamp Management System.
 ```json
 {
   "email": "user@example.com",
-  "password": "Password123!",
+  "password": "YourSecurePassword",
   "fullName": "John Doe",
   "phone": "+1234567890",
   "role": "STUDENT"
@@ -105,7 +105,7 @@ Complete API reference for the Bootcamp Management System.
 ```json
 {
   "email": "admin@bootcamp.com",
-  "password": "Password123!"
+  "password": "YourPassword"
 }
 ```
 
@@ -1003,7 +1003,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```powershell
 curl -X POST http://localhost:5000/api/v1/auth/login `
   -H "Content-Type: application/json" `
-  -d '{\"email\":\"admin@bootcamp.com\",\"password\":\"Password123!\"}'
+  -d '{\"email\":\"admin@bootcamp.com\",\"password\":\"YourPassword\"}'
 ```
 
 ### Get Bootcamps (Authenticated)

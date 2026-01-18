@@ -175,13 +175,15 @@ Server runs at: `http://localhost:5000`
 
 ### Test Accounts (After Seeding)
 
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@bootcamp.com | Password123! |
-| Sales | sales1@bootcamp.com | Password123! |
-| Instructor | instructor1@bootcamp.com | Password123! |
-| Mentor | mentor1@bootcamp.com | Password123! |
-| Student | student1@bootcamp.com | Password123! |
+| Role | Email | 
+|------|-------|
+| Admin | admin@bootcamp.com |
+| Sales | sales1@bootcamp.com |
+| Instructor | instructor1@bootcamp.com |
+| Mentor | mentor1@bootcamp.com |
+| Student | student1@bootcamp.com |
+
+**Note:** Default password is set during database seeding. Please change passwords after first login.
 
 ---
 
@@ -332,7 +334,7 @@ curl http://localhost:5000/api/v1/health
 # Login
 curl -X POST http://localhost:5000/api/v1/auth/login `
   -H "Content-Type: application/json" `
-  -d '{\"email\":\"admin@bootcamp.com\",\"password\":\"Password123!\"}'
+  -d '{\"email\":\"admin@bootcamp.com\",\"password\":\"YourPassword\"}'
 
 # Get bootcamps (with token)
 curl http://localhost:5000/api/v1/bootcamps `
