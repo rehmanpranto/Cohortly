@@ -1,1 +1,0 @@
-# Cohortly Backend - Python/FastAPI
