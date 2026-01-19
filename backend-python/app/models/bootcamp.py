@@ -3,7 +3,18 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import uuid
+import enum
 from app.database import Base
+
+
+class BootcampStatus(str, enum.Enum):
+    """Bootcamp status enumeration"""
+    DRAFT = "DRAFT"
+    PUBLISHED = "PUBLISHED"
+    IN_PROGRESS = "IN_PROGRESS"
+    COMPLETED = "COMPLETED"
+    CANCELLED = "CANCELLED"
+
 
 class Bootcamp(Base):
     __tablename__ = "bootcamps"
@@ -17,9 +28,9 @@ class Bootcamp(Base):
     duration_weeks = Column(Integer, nullable=False)
     max_students = Column(Integer, default=30)
     status = Column(
-        Enum('DRAFT', 'PUBLISHED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', name='bootcamp_status'),
-        default='DRAFT',
-        nullable=False
+        Enum(BootcampStatus),
+        nullable=False,
+        default=BootcampStatus.DRAFT
     )
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)

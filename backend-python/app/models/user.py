@@ -3,7 +3,18 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import uuid
+import enum
 from app.database import Base
+
+
+class UserRole(str, enum.Enum):
+    """User role enumeration"""
+    ADMIN = "ADMIN"
+    SALES = "SALES"
+    INSTRUCTOR = "INSTRUCTOR"
+    MENTOR = "MENTOR"
+    STUDENT = "STUDENT"
+
 
 class User(Base):
     __tablename__ = "users"
@@ -14,9 +25,9 @@ class User(Base):
     full_name = Column(String, nullable=False)
     phone = Column(String, nullable=True)
     role = Column(
-        Enum('ADMIN', 'SALES', 'INSTRUCTOR', 'MENTOR', 'STUDENT', name='user_role'),
+        Enum(UserRole),
         nullable=False,
-        default='STUDENT'
+        default=UserRole.STUDENT
     )
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)

@@ -3,7 +3,17 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import uuid
+import enum
 from app.database import Base
+
+
+class EnrollmentStatus(str, enum.Enum):
+    """Enrollment status enumeration"""
+    ACTIVE = "ACTIVE"
+    COMPLETED = "COMPLETED"
+    DROPPED = "DROPPED"
+    PENDING = "PENDING"
+
 
 class Enrollment(Base):
     __tablename__ = "enrollments"
@@ -12,8 +22,8 @@ class Enrollment(Base):
     student_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=False)
     bootcamp_id = Column(UUID(as_uuid=True), ForeignKey('bootcamps.id'), nullable=False)
     status = Column(
-        Enum('ACTIVE', 'COMPLETED', 'DROPPED', 'PENDING', name='enrollment_status'),
-        default='ACTIVE',
+        Enum(EnrollmentStatus),
+        default=EnrollmentStatus.ACTIVE,
         nullable=False
     )
     enrolled_at = Column(DateTime, default=datetime.utcnow, nullable=False)

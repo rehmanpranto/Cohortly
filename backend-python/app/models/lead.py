@@ -3,7 +3,18 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import uuid
+import enum
 from app.database import Base
+
+
+class LeadStatus(str, enum.Enum):
+    """Lead status enumeration"""
+    NEW = "NEW"
+    CONTACTED = "CONTACTED"
+    QUALIFIED = "QUALIFIED"
+    CONVERTED = "CONVERTED"
+    LOST = "LOST"
+
 
 class Lead(Base):
     __tablename__ = "leads"
@@ -15,8 +26,8 @@ class Lead(Base):
     source = Column(String, nullable=True)
     notes = Column(Text, nullable=True)
     status = Column(
-        Enum('NEW', 'CONTACTED', 'QUALIFIED', 'CONVERTED', 'LOST', name='lead_status'),
-        default='NEW',
+        Enum(LeadStatus),
+        default=LeadStatus.NEW,
         nullable=False
     )
     assigned_to_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=True)

@@ -1,5 +1,9 @@
 from pydantic_settings import BaseSettings
 from typing import Optional
+from pathlib import Path
+
+# Get the backend-python directory
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 class Settings(BaseSettings):
     # Database
@@ -25,7 +29,8 @@ class Settings(BaseSettings):
     SENDGRID_API_KEY: Optional[str] = None
     
     class Config:
-        env_file = ".env"
+        env_file = str(BASE_DIR / ".env")
+        env_file_encoding = "utf-8"
         case_sensitive = False
 
 settings = Settings()
