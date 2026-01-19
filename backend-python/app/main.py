@@ -25,14 +25,20 @@ app.add_middleware(
 )
 
 # Import routers
-from app.api import auth, bootcamps, enrollments, assignments, leads
+from app.api import (
+    auth_router,
+    bootcamps_router,
+    enrollments_router,
+    assignments_router,
+    leads_router,
+)
 
 # Include routers
-app.include_router(auth.router, prefix="/api/v1/auth", tags=["Authentication"])
-app.include_router(bootcamps.router, prefix="/api/v1/bootcamps", tags=["Bootcamps"])
-app.include_router(enrollments.router, prefix="/api/v1/enrollments", tags=["Enrollments"])
-app.include_router(assignments.router, prefix="/api/v1/assignments", tags=["Assignments"])
-app.include_router(leads.router, prefix="/api/v1/leads", tags=["Leads"])
+app.include_router(auth_router, prefix="/api/v1")
+app.include_router(bootcamps_router, prefix="/api/v1")
+app.include_router(enrollments_router, prefix="/api/v1")
+app.include_router(assignments_router, prefix="/api/v1")
+app.include_router(leads_router, prefix="/api/v1")
 
 @app.get("/")
 async def root():
