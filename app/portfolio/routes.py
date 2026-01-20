@@ -15,26 +15,26 @@ bp = Blueprint('portfolio', __name__, url_prefix='/portfolio')
 
 
 @bp.route('/')
-@login_required
 def view_portfolio():
     """View own portfolio or redirect to student selection"""
-    if current_user.role == UserRole.STUDENT:
+    # If logged in as student, redirect to their portfolio
+    if current_user.is_authenticated and current_user.role == UserRole.STUDENT:
         return redirect(url_for('portfolio.view_student_portfolio', student_id=current_user.id))
-    else:
-        # For admins/instructors, show all students with portfolios
-        profiles = StudentProfile.query.all()
-        students = []
-        for profile in profiles:
-            user = db.session.get(User, profile.user_id)
-            portfolio_count = PortfolioItem.query.filter_by(student_profile_id=profile.id).count()
-            if user and portfolio_count > 0:
-                students.append({
-                    'user': user,
-                    'profile': profile,
-                    'portfolio_count': portfolio_count
-                })
-        
-        return render_template('portfolio/list_students.html', students=students)
+    
+    # For everyone else (including public), show all students with portfolios
+    profiles = StudentProfile.query.all()
+    students = []
+    for profile in profiles:
+        user = db.session.get(User, profile.user_id)
+        portfolio_count = PortfolioItem.query.filter_by(student_profile_id=profile.id).count()
+        if user and portfolio_count > 0:
+            students.append({
+                'user': user,
+                'profile': profile,
+                'portfolio_count': portfolio_count
+            })
+    
+    return render_template('portfolio/list_students.html', students=students)
 
 
 @bp.route('/student/<uuid:student_id>')
