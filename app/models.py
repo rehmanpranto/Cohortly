@@ -214,6 +214,7 @@ class Bootcamp(db.Model):
     creator = db.relationship('User', back_populates='created_bootcamps')
     batches = db.relationship('Batch', back_populates='bootcamp', cascade='all, delete-orphan')
     modules = db.relationship('Module', back_populates='bootcamp', cascade='all, delete-orphan')
+    milestones = db.relationship('Milestone', back_populates='bootcamp', cascade='all, delete-orphan')
 
 
 class Batch(db.Model):
@@ -322,6 +323,8 @@ class Enrollment(db.Model):
     payments = db.relationship('Payment', back_populates='enrollment', cascade='all, delete-orphan')
     attendance_records = db.relationship('Attendance', back_populates='enrollment', cascade='all, delete-orphan')
     certificate = db.relationship('Certificate', back_populates='enrollment', uselist=False, cascade='all, delete-orphan')
+    milestone_progress = db.relationship('StudentMilestone', back_populates='enrollment', cascade='all, delete-orphan')
+    milestone_progress = db.relationship('StudentMilestone', back_populates='enrollment', cascade='all, delete-orphan')
 
 
 class Payment(db.Model):
@@ -523,6 +526,40 @@ class Certificate(db.Model):
     
     # Relationships
     enrollment = db.relationship('Enrollment', back_populates='certificate')
+
+
+class Milestone(db.Model):
+    """Bootcamp milestone model for tracking student progress"""
+    __tablename__ = 'milestones'
+    
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    bootcamp_id = db.Column(UUID(as_uuid=True), db.ForeignKey('bootcamps.id', ondelete='CASCADE'), nullable=False)
+    title = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text)
+    order = db.Column(db.Integer, nullable=False)  # Order in the bootcamp
+    percentage_weight = db.Column(db.Integer, nullable=False, default=10)  # Contribution to overall progress
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    
+    # Relationships
+    bootcamp = db.relationship('Bootcamp', back_populates='milestones')
+    student_milestones = db.relationship('StudentMilestone', back_populates='milestone', cascade='all, delete-orphan')
+
+
+class StudentMilestone(db.Model):
+    """Student milestone completion tracking"""
+    __tablename__ = 'student_milestones'
+    
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    enrollment_id = db.Column(UUID(as_uuid=True), db.ForeignKey('enrollments.id', ondelete='CASCADE'), nullable=False)
+    milestone_id = db.Column(UUID(as_uuid=True), db.ForeignKey('milestones.id', ondelete='CASCADE'), nullable=False)
+    completed = db.Column(db.Boolean, default=False, nullable=False)
+    completed_at = db.Column(db.DateTime)
+    notes = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    
+    # Relationships
+    enrollment = db.relationship('Enrollment', back_populates='milestone_progress')
+    milestone = db.relationship('Milestone', back_populates='student_milestones')
 
 
 # =========================

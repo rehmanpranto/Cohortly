@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Verification - HDNB Bootcamp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Verification Success Card -->
+                <div class="card shadow-lg border-0">
+                    <div class="card-body p-5">
+                        <!-- Success Icon -->
+                        <div class="text-center mb-4">
+                            <div class="mb-3">
+                                <i class="bi bi-patch-check-fill" style="font-size: 5rem; color: #00cc66;"></i>
+                            </div>
+                            <h2 class="fw-bold mb-2" style="color: #0066cc;">Certificate Verified!</h2>
+                            <p class="text-muted mb-0">This certificate is authentic and issued by HDNB Bootcamp</p>
+                        </div>
+
+                        <!-- Certificate Details -->
+                        <div class="card bg-light mb-4">
+                            <div class="card-body">
+                                <h4 class="mb-3 fw-bold">Certificate Details</h4>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Student Name:</strong>
+                                    </div>
+                                    <div class="col-md-8">
+                                        {{ student.full_name }}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Bootcamp:</strong>
+                                    </div>
+                                    <div class="col-md-8">
+                                        {{ bootcamp.title }}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Duration:</strong>
+                                    </div>
+                                    <div class="col-md-8">
+                                        {{ bootcamp.duration_weeks }} Weeks
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Batch:</strong>
+                                    </div>
+                                    <div class="col-md-8">
+                                        {{ enrollment.batch.name }}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Issue Date:</strong>
+                                    </div>
+                                    <div class="col-md-8">
+                                        {{ certificate.issued_at.strftime('%B %d, %Y') }}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Verification Code:</strong>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <code style="font-size: 1.1rem; color: #0066cc;">{{ certificate.verification_code }}</code>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <strong>Status:</strong>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <span class="badge bg-success" style="font-size: 1rem;">
+                                            <i class="bi bi-check-circle-fill"></i> Valid & Verified
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Info -->
+                        <div class="alert alert-info d-flex align-items-center" role="alert">
+                            <i class="bi bi-info-circle-fill me-2" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <strong>About This Certificate:</strong><br>
+                                This certificate confirms that the holder has successfully completed the 
+                                {{ bootcamp.title }} program at HDNB Bootcamp and demonstrated proficiency 
+                                in the course curriculum.
+                            </div>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="text-center mt-4">
+                            <hr>
+                            <p class="text-muted mb-0">
+                                <i class="bi bi-shield-check"></i> 
+                                This verification is provided by HDNB Bootcamp's official certificate verification system.
+                            </p>
+                            <p class="text-muted mb-0 mt-2">
+                                Verified on: {{ now().strftime('%B %d, %Y at %I:%M %p') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HDNB Branding -->
+                <div class="text-center mt-4">
+                    <div class="d-inline-block p-3" style="background: white; border-radius: 10px;">
+                        <svg width="60" height="60" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" fill="#e63946"/>
+                            <text x="50" y="65" font-size="40" fill="white" text-anchor="middle" font-weight="bold">H</text>
+                        </svg>
+                        <h5 class="mt-2 mb-0" style="color: white;">HDNB Bootcamp</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

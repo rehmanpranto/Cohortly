@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Certificate Card -->
+            <div class="card shadow-lg border-0 mb-4" id="certificate" style="background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);">
+                <div class="card-body p-5">
+                    <!-- Header with Logo -->
+                    <div class="text-center mb-4">
+                        <div class="mb-3">
+                            <svg width="80" height="80" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="45" fill="#e63946"/>
+                                <text x="50" y="65" font-size="40" fill="white" text-anchor="middle" font-weight="bold">H</text>
+                            </svg>
+                        </div>
+                        <h1 class="fw-bold mb-0" style="color: #0066cc; font-size: 2.5rem;">HDNB Bootcamp</h1>
+                        <p class="text-muted mb-0">Certificate of Completion</p>
+                    </div>
+
+                    <!-- Decorative Border -->
+                    <div style="border: 3px solid #ffc107; padding: 30px; border-radius: 10px; background: white;">
+                        <!-- Certificate Content -->
+                        <div class="text-center mb-4">
+                            <p class="text-muted mb-2" style="font-size: 1.1rem;">This is to certify that</p>
+                            <h2 class="fw-bold mb-3" style="color: #e63946; font-size: 2.5rem; font-family: 'Georgia', serif;">
+                                {{ student.full_name }}
+                            </h2>
+                            <p class="text-muted mb-2" style="font-size: 1.1rem;">has successfully completed</p>
+                            <h3 class="fw-bold mb-4" style="color: #0066cc; font-size: 2rem;">
+                                {{ bootcamp.title }}
+                            </h3>
+                        </div>
+
+                        <!-- Course Details -->
+                        <div class="row mb-4">
+                            <div class="col-md-6 text-center mb-3">
+                                <p class="mb-1 text-muted"><strong>Duration</strong></p>
+                                <p class="mb-0" style="font-size: 1.1rem;">{{ bootcamp.duration_weeks }} Weeks</p>
+                            </div>
+                            <div class="col-md-6 text-center mb-3">
+                                <p class="mb-1 text-muted"><strong>Completion Date</strong></p>
+                                <p class="mb-0" style="font-size: 1.1rem;">{{ certificate.issued_at.strftime('%B %d, %Y') }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Achievement Statement -->
+                        <div class="text-center mb-4">
+                            <p class="text-muted" style="font-size: 1rem; line-height: 1.8;">
+                                This certificate acknowledges the dedication, hard work, and skills acquired 
+                                throughout the {{ bootcamp.title }} program. The recipient has demonstrated 
+                                proficiency in the course curriculum and successfully completed all required milestones.
+                            </p>
+                        </div>
+
+                        <!-- Verification Code -->
+                        <div class="text-center mb-4">
+                            <p class="mb-1 text-muted" style="font-size: 0.9rem;">Certificate Verification Code</p>
+                            <p class="mb-0 fw-bold" style="color: #0066cc; font-size: 1.3rem; letter-spacing: 2px; font-family: 'Courier New', monospace;">
+                                {{ certificate.verification_code }}
+                            </p>
+                            <small class="text-muted">
+                                Verify at: {{ request.host_url }}lms/certificate/verify/{{ certificate.verification_code }}
+                            </small>
+                        </div>
+
+                        <!-- Signature Line -->
+                        <div class="row mt-5 pt-4">
+                            <div class="col-6 text-center">
+                                <div style="border-top: 2px solid #dee2e6; display: inline-block; width: 200px; margin: 0 auto;"></div>
+                                <p class="mt-2 mb-0 fw-bold">Director</p>
+                                <small class="text-muted">HDNB Bootcamp</small>
+                            </div>
+                            <div class="col-6 text-center">
+                                <div style="border-top: 2px solid #dee2e6; display: inline-block; width: 200px; margin: 0 auto;"></div>
+                                <p class="mt-2 mb-0 fw-bold">Issue Date</p>
+                                <small class="text-muted">{{ certificate.issued_at.strftime('%B %d, %Y') }}</small>
+                            </div>
+                        </div>
+
+                        <!-- Decorative Elements -->
+                        <div class="text-center mt-4">
+                            <i class="bi bi-award-fill" style="color: #ffc107; font-size: 3rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="text-center mb-4">
+                <button onclick="printCertificate()" class="btn btn-primary btn-lg me-2">
+                    <i class="bi bi-printer"></i> Print Certificate
+                </button>
+                <button onclick="downloadCertificate()" class="btn btn-success btn-lg me-2">
+                    <i class="bi bi-download"></i> Download PDF
+                </button>
+                <a href="{{ url_for('lms.student_dashboard') }}" class="btn btn-secondary btn-lg">
+                    <i class="bi bi-house"></i> Back to Dashboard
+                </a>
+            </div>
+
+            <!-- Share Certificate -->
+            <div class="card shadow-sm">
+                <div class="card-header" style="background-color: #00cc66; color: white;">
+                    <h5 class="mb-0"><i class="bi bi-share"></i> Share Your Achievement</h5>
+                </div>
+                <div class="card-body text-center">
+                    <p class="mb-3">Celebrate your success by sharing your certificate on social media!</p>
+                    <button onclick="shareLinkedIn()" class="btn btn-outline-primary me-2">
+                        <i class="bi bi-linkedin"></i> Share on LinkedIn
+                    </button>
+                    <button onclick="shareTwitter()" class="btn btn-outline-info me-2">
+                        <i class="bi bi-twitter"></i> Share on Twitter
+                    </button>
+                    <button onclick="copyLink()" class="btn btn-outline-secondary">
+                        <i class="bi bi-link-45deg"></i> Copy Verification Link
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+function printCertificate() {
+    window.print();
+}
+
+function downloadCertificate() {
+    const certificate = document.getElementById('certificate');
+    
+    html2canvas(certificate, {
+        scale: 2,
+        logging: false,
+        useCORS: true
+    }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({
+            orientation: 'landscape',
+            unit: 'mm',
+            format: 'a4'
+        });
+        
+        const imgWidth = 297;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        pdf.save('HDNB_Certificate_{{ student.full_name.replace(" ", "_") }}.pdf');
+    });
+}
+
+function shareLinkedIn() {
+    const url = encodeURIComponent('{{ request.host_url }}lms/certificate/verify/{{ certificate.verification_code }}');
+    const text = encodeURIComponent('I just completed {{ bootcamp.title }} at HDNB Bootcamp! 🎉');
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}&summary=${text}`, '_blank');
+}
+
+function shareTwitter() {
+    const url = encodeURIComponent('{{ request.host_url }}lms/certificate/verify/{{ certificate.verification_code }}');
+    const text = encodeURIComponent('I just completed {{ bootcamp.title }} at HDNB Bootcamp! 🎉 #HDNBBootcamp #Learning');
+    window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
+}
+
+function copyLink() {
+    const link = '{{ request.host_url }}lms/certificate/verify/{{ certificate.verification_code }}';
+    navigator.clipboard.writeText(link).then(() => {
+        alert('Verification link copied to clipboard!');
+    });
+}
+</script>
+
+<style>
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    
+    #certificate, #certificate * {
+        visibility: visible;
+    }
+    
+    #certificate {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+    
+    .btn, .card:not(#certificate) {
+        display: none !important;
+    }
+}
+</style>
+{% endblock %}
