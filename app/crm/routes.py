@@ -224,8 +224,8 @@ def convert_lead(lead_id):
         
         db.session.commit()
         
-        flash(f'Lead converted to student! Email: {student.email}', 'success')
-        return redirect(url_for('crm.view_lead', lead_id=lead_id))
+        flash(f'Lead converted to student! Email: {student.email}. Now enroll them in a bootcamp.', 'success')
+        return redirect(url_for('crm.quick_enroll', student_id=student.id))
     
     except Exception as e:
         db.session.rollback()
@@ -316,3 +316,97 @@ def list_batches():
     
     batches = Batch.query.order_by(Batch.created_at.desc()).all()
     return render_template('admin/batches.html', batches=batches)
+
+
+@crm_bp.route('/students')
+@sales_required
+def list_students():
+    """List all students with enrollment options"""
+    from app.models import User, Enrollment, Lead
+    
+    # Get all students
+    students = User.query.filter_by(role=UserRole.STUDENT).order_by(User.created_at.desc()).all()
+    
+    # Get enrollment counts for each student
+    student_data = []
+    for student in students:
+        enrollments_count = Enrollment.query.filter_by(student_id=student.id).count()
+        
+        # Check if student was converted from a lead
+        lead = Lead.query.filter_by(email=student.email).first()
+        
+        student_data.append({
+            'student': student,
+            'enrollments_count': enrollments_count,
+            'lead': lead
+        })
+    
+    return render_template('admin/students_list.html', student_data=student_data)
+
+
+@crm_bp.route('/quick-enroll/<uuid:student_id>', methods=['GET', 'POST'])
+@sales_required
+def quick_enroll(student_id):
+    """Quick enrollment form with lead matching"""
+    from app.models import User, Bootcamp, Batch, Enrollment, EnrollmentStatus, Lead
+    
+    student = User.query.get_or_404(student_id)
+    
+    if student.role != UserRole.STUDENT:
+        flash('Only students can be enrolled in bootcamps.', 'danger')
+        return redirect(url_for('crm.list_students'))
+    
+    # Get lead data if exists
+    lead = Lead.query.filter_by(email=student.email).first()
+    
+    if request.method == 'POST':
+        try:
+            batch_id = request.form.get('batch_id')
+            
+            if not batch_id:
+                flash('Please select a batch.', 'warning')
+                return redirect(url_for('crm.quick_enroll', student_id=student_id))
+            
+            # Check if already enrolled
+            existing = Enrollment.query.filter_by(
+                student_id=student_id,
+                batch_id=batch_id
+            ).first()
+            
+            if existing:
+                flash('Student is already enrolled in this batch.', 'info')
+                return redirect(url_for('crm.list_students'))
+            
+            # Create enrollment
+            enrollment = Enrollment(
+                student_id=student_id,
+                batch_id=batch_id,
+                status=EnrollmentStatus.ACTIVE,
+                enrolled_by_id=current_user.id
+            )
+            db.session.add(enrollment)
+            
+            # Update lead status if exists
+            if lead and lead.status != 'converted':
+                lead.status = 'converted'
+                lead.converted_at = datetime.utcnow()
+            
+            db.session.commit()
+            flash(f'Successfully enrolled {student.full_name}!', 'success')
+            return redirect(url_for('crm.list_students'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error enrolling student: {str(e)}', 'danger')
+            return redirect(url_for('crm.quick_enroll', student_id=student_id))
+    
+    # Get all bootcamps with their batches
+    bootcamps = Bootcamp.query.all()
+    student_enrollments = Enrollment.query.filter_by(student_id=student_id).all()
+    enrolled_batch_ids = [e.batch_id for e in student_enrollments]
+    
+    return render_template('admin/quick_enroll.html', 
+                         student=student,
+                         lead=lead,
+                         bootcamps=bootcamps,
+                         enrolled_batch_ids=enrolled_batch_ids)

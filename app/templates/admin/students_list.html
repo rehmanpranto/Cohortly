@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="fw-bold">Students</h2>
+                    <p class="text-muted mb-0">Manage student enrollments</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Enrollments</th>
+                            <th>Lead Source</th>
+                            <th>Join Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if student_data %}
+                            {% for data in student_data %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2" 
+                                             style="width: 40px; height: 40px; font-weight: 600;">
+                                            {{ data.student.full_name[0].upper() if data.student.full_name else '?' }}
+                                        </div>
+                                        <div>
+                                            <div class="fw-semibold">{{ data.student.full_name or 'N/A' }}</div>
+                                            {% if data.lead %}
+                                                <small class="text-success">
+                                                    <i class="bi bi-check-circle-fill"></i> From Lead
+                                                </small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ data.student.email }}</td>
+                                <td>{{ data.student.phone_number or 'N/A' }}</td>
+                                <td>
+                                    {% if data.enrollments_count > 0 %}
+                                        <span class="badge bg-success rounded-pill">
+                                            {{ data.enrollments_count }} Bootcamp{{ 's' if data.enrollments_count != 1 else '' }}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary rounded-pill">Not Enrolled</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if data.lead %}
+                                        <span class="badge" style="background-color: #0066cc;">{{ data.lead.source }}</span>
+                                        {% if data.lead.status == 'converted' %}
+                                            <span class="badge bg-success ms-1">Converted</span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark ms-1">{{ data.lead.status }}</span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-muted">Direct</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ data.student.created_at.strftime('%B %d, %Y') }}</td>
+                                <td>
+                                    <a href="{{ url_for('crm.quick_enroll', student_id=data.student.id) }}" 
+                                       class="btn btn-sm btn-primary">
+                                        <i class="bi bi-plus-circle"></i> Enroll
+                                    </a>
+                                    <a href="{{ url_for('crm.list_enrollments') }}?student={{ data.student.id }}" 
+                                       class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-list-ul"></i> View
+                                    </a>
+                                    {% if data.lead %}
+                                        <a href="{{ url_for('crm.list_leads') }}" 
+                                           class="btn btn-sm btn-outline-info">
+                                            <i class="bi bi-file-earmark-person"></i> Lead
+                                        </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center py-5 text-muted">
+                                    <i class="bi bi-people" style="font-size: 3rem;"></i>
+                                    <p class="mt-3">No students found</p>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mt-4">
+        <div class="card-header" style="background-color: #0066cc; color: white;">
+            <h5 class="mb-0"><i class="bi bi-info-circle"></i> Quick Stats</h5>
+        </div>
+        <div class="card-body">
+            <div class="row text-center">
+                <div class="col-md-3">
+                    <div class="p-3 rounded" style="background-color: #f8f9fa;">
+                        <h3 class="mb-0" style="color: #0066cc;">{{ student_data|length }}</h3>
+                        <small class="text-muted">Total Students</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 rounded" style="background-color: #f8f9fa;">
+                        <h3 class="mb-0" style="color: #00cc66;">
+                            {{ student_data|selectattr('enrollments_count', 'gt', 0)|list|length }}
+                        </h3>
+                        <small class="text-muted">Enrolled</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 rounded" style="background-color: #f8f9fa;">
+                        <h3 class="mb-0" style="color: #e63946;">
+                            {{ student_data|selectattr('enrollments_count', 'equalto', 0)|list|length }}
+                        </h3>
+                        <small class="text-muted">Not Enrolled</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 rounded" style="background-color: #f8f9fa;">
+                        <h3 class="mb-0" style="color: #ffc107;">
+                            {{ student_data|selectattr('lead')|list|length }}
+                        </h3>
+                        <small class="text-muted">From Leads</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
