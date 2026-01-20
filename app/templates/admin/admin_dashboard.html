@@ -1,0 +1,384 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Cohortly{% endblock %}
+
+{% block content %}
+<!-- Background Pattern - HDNB Colors -->
+<div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+    <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-green-50 to-red-50"></div>
+    <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 1px 1px, rgba(0, 102, 204, 0.15) 1px, transparent 0); background-size: 40px 40px;"></div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8 animate-slide-up">
+        <h1 class="text-5xl font-extrabold">
+            <span class="bg-gradient-to-r from-red-600 via-blue-600 to-green-600 bg-clip-text text-transparent">
+                Admin Dashboard
+            </span>
+        </h1>
+        <p class="mt-3 text-gray-600 text-lg flex items-center">
+            <span class="status-dot active"></span>
+            Welcome back! Here's what's happening with your bootcamp.
+        </p>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        <!-- Total Leads -->
+        <div class="bg-white/80 backdrop-blur-lg overflow-hidden shadow-lg rounded-2xl border border-gray-200/50 card-hover animate-scale-in" style="animation-delay: 0.1s">
+            <div class="p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="h-14 w-14 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg">
+                            <i class="fas fa-users text-white text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Total Leads</dt>
+                            <dd class="text-3xl font-extrabold text-gray-900 mt-1">{{ stats.total_leads }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-3 border-t border-gray-100">
+                <div class="text-sm">
+                    <a href="{{ url_for('crm.list_leads') }}" class="font-semibold text-blue-600 hover:text-blue-700 inline-flex items-center group">
+                        View all 
+                        <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Students -->
+        <div class="bg-white/80 backdrop-blur-lg overflow-hidden shadow-lg rounded-2xl border border-gray-200/50 card-hover animate-scale-in" style="animation-delay: 0.2s">
+            <div class="p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="h-14 w-14 rounded-xl bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center shadow-lg">
+                            <i class="fas fa-graduation-cap text-white text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Active Students</dt>
+                            <dd class="text-3xl font-extrabold text-gray-900 mt-1">{{ stats.active_enrollments }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-3 border-t border-gray-100">
+                <div class="text-sm">
+                    <a href="{{ url_for('crm.list_enrollments') }}" class="font-semibold text-green-600 hover:text-green-700 inline-flex items-center group">
+                        View all enrollments
+                        <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Revenue -->
+        <div class="bg-white/80 backdrop-blur-lg overflow-hidden shadow-lg rounded-2xl border border-gray-200/50 card-hover animate-scale-in" style="animation-delay: 0.3s">
+            <div class="p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="h-14 w-14 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-lg">
+                            <i class="fas fa-bangladeshi-taka-sign text-white text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Total Revenue</dt>
+                            <dd class="text-3xl font-extrabold text-gray-900 mt-1">৳{{ "%0.2f"|format(stats.total_revenue or 0) }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gradient-to-r from-yellow-50 to-orange-50 px-6 py-3 border-t border-gray-100">
+                <div class="text-sm">
+                    <a href="{{ url_for('analytics.revenue_report') }}" class="font-semibold text-orange-600 hover:text-orange-700 inline-flex items-center group">
+                        View report 
+                        <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conversion Rate -->
+        <div class="bg-white/80 backdrop-blur-lg overflow-hidden shadow-lg rounded-2xl border border-gray-200/50 card-hover animate-scale-in" style="animation-delay: 0.4s">
+            <div class="p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="h-14 w-14 rounded-xl bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center shadow-lg">
+                            <i class="fas fa-chart-line text-white text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Conversion Rate</dt>
+                            <dd class="text-3xl font-extrabold text-gray-900 mt-1">{{ "%.1f"|format(stats.conversion_rate) }}%</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gradient-to-r from-purple-50 to-pink-50 px-6 py-3 border-t border-gray-100">
+                <div class="text-sm">
+                    <span class="text-purple-700 font-medium">
+                        <i class="fas fa-users mr-1"></i>
+                        {{ stats.converted_leads }} / {{ stats.total_leads }} leads
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Feature Cards - HDNB Colors -->
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+        <!-- Projects - Blue -->
+        <div class="group bg-white overflow-hidden shadow-elegant rounded-2xl border border-gray-100 card-hover hover-glow animate-scale-in stagger-1">
+            <div class="p-6 bg-gradient-to-br from-blue-50 via-white to-blue-50">
+                <div class="flex items-center mb-4">
+                    <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-lg icon-container transform group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-project-diagram text-white text-xl"></i>
+                    </div>
+                    <h3 class="ml-4 text-xl font-bold text-gray-900">Projects</h3>
+                </div>
+                <p class="text-gray-600 text-sm mb-6 leading-relaxed">Manage student projects and submissions</p>
+                <div class="space-y-3">
+                    <a href="{{ url_for('projects.list_projects') }}" class="flex items-center justify-between p-3 rounded-xl bg-white hover:bg-blue-50 border border-gray-100 hover:border-blue-200 transition-all duration-200 group/link">
+                        <span class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
+                            <i class="fas fa-list mr-2"></i>View All Projects
+                        </span>
+                        <i class="fas fa-arrow-right text-blue-400 transform group-hover/link:translate-x-1 transition-transform"></i>
+                    </a>
+                    <a href="{{ url_for('projects.create_project') }}" class="flex items-center justify-between p-3 rounded-xl bg-white hover:bg-green-50 border border-gray-100 hover:border-green-200 transition-all duration-200 group/link">
+                        <span class="text-green-600 hover:text-green-800 text-sm font-medium flex items-center">
+                            <i class="fas fa-plus mr-2"></i>Create New Project
+                        </span>
+                        <i class="fas fa-arrow-right text-green-400 transform group-hover/link:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- At-Risk Students - Red -->
+        <div class="group bg-white overflow-hidden shadow-elegant rounded-2xl border border-gray-100 card-hover hover-glow animate-scale-in stagger-2">
+            <div class="p-6 bg-gradient-to-br from-red-50 via-white to-red-50">
+                <div class="flex items-center mb-4">
+                    <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center shadow-lg icon-container transform group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-exclamation-triangle text-white text-xl"></i>
+                    </div>
+                    <h3 class="ml-4 text-xl font-bold text-gray-900">At-Risk Students</h3>
+                </div>
+                <p class="text-gray-600 text-sm mb-6 leading-relaxed">Monitor students needing intervention</p>
+                <a href="{{ url_for('student_lifecycle.at_risk_students') }}" class="flex items-center justify-between p-3 rounded-xl bg-white hover:bg-red-50 border border-gray-100 hover:border-red-200 transition-all duration-200 group/link">
+                    <span class="text-red-600 hover:text-red-800 text-sm font-medium flex items-center">
+                        <i class="fas fa-eye mr-2"></i>View At-Risk Dashboard
+                    </span>
+                    <i class="fas fa-arrow-right text-red-400 transform group-hover/link:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Career & Placements - Yellow/Orange -->
+        <div class="group bg-white overflow-hidden shadow-elegant rounded-2xl border border-gray-100 card-hover hover-glow animate-scale-in stagger-3">
+            <div class="p-6 bg-gradient-to-br from-yellow-50 via-white to-yellow-50">
+                <div class="flex items-center mb-4">
+                    <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center shadow-lg icon-container transform group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-briefcase text-white text-xl"></i>
+                    </div>
+                    <h3 class="ml-4 text-xl font-bold text-gray-900">Career Support</h3>
+                </div>
+                <p class="text-gray-600 text-sm mb-6 leading-relaxed">Track student job placements</p>
+                <div class="space-y-3">
+                    <a href="{{ url_for('career.placement_tracker') }}" class="flex items-center justify-between p-3 rounded-xl bg-white hover:bg-yellow-50 border border-gray-100 hover:border-yellow-200 transition-all duration-200 group/link">
+                        <span class="text-yellow-600 hover:text-yellow-800 text-sm font-medium flex items-center">
+                            <i class="fas fa-chart-line mr-2"></i>Placement Tracker
+                        </span>
+                        <i class="fas fa-arrow-right text-yellow-400 transform group-hover/link:translate-x-1 transition-transform"></i>
+                    </a>
+                    <a href="{{ url_for('career.alumni_network') }}" class="flex items-center justify-between p-3 rounded-xl bg-white hover:bg-yellow-50 border border-gray-100 hover:border-yellow-200 transition-all duration-200 group/link">
+                        <span class="text-yellow-700 hover:text-yellow-800 text-sm font-medium flex items-center">
+                            <i class="fas fa-users mr-2"></i>Alumni Network
+                        </span>
+                        <i class="fas fa-arrow-right text-yellow-400 transform group-hover/link:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Communication - Green -->
+        <div class="group bg-white overflow-hidden shadow-elegant rounded-2xl border border-gray-100 card-hover hover-glow animate-scale-in stagger-4">
+            <div class="p-6 bg-gradient-to-br from-green-50 via-white to-green-50">
+                <div class="flex items-center mb-4">
+                    <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-green-600 to-green-700 flex items-center justify-center shadow-lg icon-container transform group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-comments text-white text-xl"></i>
+                    </div>
+                    <h3 class="ml-4 text-xl font-bold text-gray-900">Communication</h3>
+                </div>
+                <p class="text-gray-600 text-sm mb-6 leading-relaxed">Messages, forums, and surveys</p>
+                <div class="space-y-3">
+                    <a href="{{ url_for('communication.inbox') }}" class="flex items-center justify-between p-3 rounded-xl bg-white hover:bg-green-50 border border-gray-100 hover:border-green-200 transition-all duration-200 group/link">
+                        <span class="text-green-600 hover:text-green-800 text-sm font-medium flex items-center">
+                            <i class="fas fa-inbox mr-2"></i>Messages
+                        </span>
+                        <i class="fas fa-arrow-right text-green-400 transform group-hover/link:translate-x-1 transition-transform"></i>
+                    </a>
+                    <a href="{{ url_for('communication.list_forums') }}" class="flex items-center justify-between p-3 rounded-xl bg-white hover:bg-green-50 border border-gray-100 hover:border-green-200 transition-all duration-200 group/link">
+                        <span class="text-green-600 hover:text-green-800 text-sm font-medium flex items-center">
+                            <i class="fas fa-comments mr-2"></i>Forums
+                        </span>
+                        <i class="fas fa-arrow-right text-green-400 transform group-hover/link:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Portfolio - Blue (alternate) -->
+        <div class="group bg-white overflow-hidden shadow-elegant rounded-2xl border border-gray-100 card-hover hover-glow animate-scale-in stagger-5">
+            <div class="p-6 bg-gradient-to-br from-blue-50 via-white to-blue-50">
+                <div class="flex items-center mb-4">
+                    <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg icon-container transform group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-folder-open text-white text-xl"></i>
+                    </div>
+                    <h3 class="ml-4 text-xl font-bold text-gray-900">Portfolios</h3>
+                </div>
+                <p class="text-gray-600 text-sm mb-6 leading-relaxed">Student project showcases</p>
+                <a href="{{ url_for('portfolio.view_portfolio') }}" class="flex items-center justify-between p-3 rounded-xl bg-white hover:bg-blue-50 border border-gray-100 hover:border-blue-200 transition-all duration-200 group/link">
+                    <span class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
+                        <i class="fas fa-eye mr-2"></i>View All Portfolios
+                    </span>
+                    <i class="fas fa-arrow-right text-blue-400 transform group-hover/link:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Surveys - Red (alternate) -->
+        <div class="group bg-white overflow-hidden shadow-elegant rounded-2xl border border-gray-100 card-hover hover-glow animate-scale-in stagger-6">
+            <div class="p-6 bg-gradient-to-br from-red-50 via-white to-red-50">
+                <div class="flex items-center mb-4">
+                    <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg icon-container transform group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-poll text-white text-xl"></i>
+                    </div>
+                    <h3 class="ml-4 text-xl font-bold text-gray-900">Surveys</h3>
+                </div>
+                <p class="text-gray-600 text-sm mb-6 leading-relaxed">Feedback and evaluations</p>
+                <div class="space-y-3">
+                    <a href="{{ url_for('communication.list_surveys') }}" class="flex items-center justify-between p-3 rounded-xl bg-white hover:bg-red-50 border border-gray-100 hover:border-red-200 transition-all duration-200 group/link">
+                        <span class="text-red-600 hover:text-red-800 text-sm font-medium flex items-center">
+                            <i class="fas fa-list mr-2"></i>View Surveys
+                        </span>
+                        <i class="fas fa-arrow-right text-red-400 transform group-hover/link:translate-x-1 transition-transform"></i>
+                    </a>
+                    <a href="{{ url_for('communication.create_survey') }}" class="flex items-center justify-between p-3 rounded-xl bg-white hover:bg-green-50 border border-gray-100 hover:border-green-200 transition-all duration-200 group/link">
+                        <span class="text-green-600 hover:text-green-800 text-sm font-medium flex items-center">
+                            <i class="fas fa-plus mr-2"></i>Create Survey
+                        </span>
+                        <i class="fas fa-arrow-right text-green-400 transform group-hover/link:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-fade-in">
+        <!-- Recent Enrollments -->
+        <div class="bg-white/80 backdrop-blur-lg shadow-lg rounded-2xl border border-gray-200/50 overflow-hidden">
+            <div class="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+                <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                    <i class="fas fa-user-check text-blue-600 mr-2"></i>
+                    Recent Enrollments
+                </h3>
+            </div>
+            <div class="px-6 py-5">
+                {% if recent_enrollments %}
+                <ul class="divide-y divide-gray-200">
+                    {% for enrollment in recent_enrollments %}
+                    <li class="py-4 hover:bg-gray-50 rounded-lg px-3 -mx-3 transition-colors duration-150">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                <div class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white font-semibold shadow">
+                                    {{ enrollment.student.full_name[0].upper() }}
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-semibold text-gray-900 truncate">
+                                    {{ enrollment.student.full_name }}
+                                </p>
+                                <p class="text-sm text-gray-500 truncate">
+                                    {{ enrollment.batch.bootcamp.title }}
+                                </p>
+                            </div>
+                            <div>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold shadow-sm
+                                    {% if enrollment.status.value == 'active' %}bg-green-100 text-green-800
+                                    {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                                    {{ enrollment.status.value }}
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="text-center py-12">
+                    <i class="fas fa-inbox text-gray-300 text-5xl mb-3"></i>
+                    <p class="text-sm text-gray-500">No recent enrollments</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Recent Leads -->
+        <div class="bg-white/80 backdrop-blur-lg shadow-lg rounded-2xl border border-gray-200/50 overflow-hidden">
+            <div class="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-green-50 to-emerald-50">
+                <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                    <i class="fas fa-user-plus text-green-600 mr-2"></i>
+                    Recent Leads
+                </h3>
+            </div>
+            <div class="px-6 py-5">
+                {% if recent_leads %}
+                <ul class="divide-y divide-gray-200">
+                    {% for lead in recent_leads %}
+                    <li class="py-4 hover:bg-gray-50 rounded-lg px-3 -mx-3 transition-colors duration-150">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                <div class="h-10 w-10 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white font-semibold shadow">
+                                    {{ lead.full_name[0].upper() }}
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-semibold text-gray-900 truncate">
+                                    {{ lead.full_name }}
+                                </p>
+                                <p class="text-sm text-gray-500 truncate">
+                                    {{ lead.email }}
+                                </p>
+                            </div>
+                            <div>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold shadow-sm
+                                    {% if lead.status.value == 'new' %}bg-blue-100 text-blue-800
+                                    {% elif lead.status.value == 'converted' %}bg-green-100 text-green-800
+                                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                    {{ lead.status.value }}
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="text-center py-12">
+                    <i class="fas fa-inbox text-gray-300 text-5xl mb-3"></i>
+                    <p class="text-sm text-gray-500">No recent leads</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

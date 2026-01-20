@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Enroll Student - Cohortly{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8 animate-slide-up">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-4xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                    Enroll Student
+                </h1>
+                <p class="mt-2 text-gray-600 text-lg">Enroll {{ student.full_name }} in bootcamp batches</p>
+            </div>
+            <a href="{{ url_for('crm.list_enrollments') }}" 
+               class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 shadow-sm transition-all duration-200">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Enrollments
+            </a>
+        </div>
+    </div>
+
+    <!-- Student Info Card -->
+    <div class="bg-white/80 backdrop-blur-lg shadow-lg rounded-2xl border border-gray-200/50 p-6 mb-6 animate-scale-in">
+        <div class="flex items-center">
+            <div class="h-16 w-16 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-2xl font-bold">
+                {{ student.full_name[0] }}
+            </div>
+            <div class="ml-4">
+                <h3 class="text-xl font-semibold text-gray-900">{{ student.full_name }}</h3>
+                <p class="text-sm text-gray-500"><i class="fas fa-envelope mr-1"></i>{{ student.email }}</p>
+                {% if student.phone %}
+                <p class="text-sm text-gray-500"><i class="fas fa-phone mr-1"></i>{{ student.phone }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="bg-white/80 backdrop-blur-lg shadow-lg rounded-2xl border border-gray-200/50 overflow-hidden animate-scale-in" style="animation-delay: 0.1s">
+        <div class="px-8 py-6 border-b border-gray-200">
+            <h3 class="text-lg leading-6 font-semibold text-gray-900">
+                <i class="fas fa-graduation-cap mr-2 text-blue-500"></i>
+                Select Bootcamp Batches
+            </h3>
+        </div>
+
+        <form method="POST" action="{{ url_for('crm.enroll_student', student_id=student.id) }}" class="px-8 py-6">
+            {% if bootcamps %}
+            <div class="space-y-6">
+                {% for bootcamp in bootcamps %}
+                <div class="border border-gray-200 rounded-xl p-6 hover:border-blue-300 transition-colors duration-200">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-laptop-code mr-2 text-blue-500"></i>
+                        {{ bootcamp.title }}
+                    </h4>
+                    <p class="text-sm text-gray-600 mb-4">{{ bootcamp.description }}</p>
+                    
+                    {% if bootcamp.batches %}
+                    <div class="space-y-3">
+                        <p class="text-sm font-medium text-gray-700">Available Batches:</p>
+                        {% for batch in bootcamp.batches %}
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                            <input type="checkbox" 
+                                   name="batch_ids[]" 
+                                   value="{{ batch.id }}"
+                                   id="batch_{{ batch.id }}"
+                                   {% if batch.id in enrolled_batch_ids %}checked disabled{% endif %}
+                                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="batch_{{ batch.id }}" class="ml-3 flex-1 cursor-pointer">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <span class="text-sm font-medium text-gray-900">
+                                            Batch #{{ batch.id[:8] }}
+                                        </span>
+                                        <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
+                                            {% if batch.status.value == 'ongoing' %}bg-green-100 text-green-800
+                                            {% elif batch.status.value == 'upcoming' %}bg-blue-100 text-blue-800
+                                            {% elif batch.status.value == 'completed' %}bg-gray-100 text-gray-800
+                                            {% else %}bg-red-100 text-red-800{% endif %}">
+                                            {{ batch.status.value }}
+                                        </span>
+                                        {% if batch.id in enrolled_batch_ids %}
+                                        <span class="ml-2 text-xs text-green-600 font-medium">
+                                            <i class="fas fa-check-circle"></i> Already Enrolled
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="text-xs text-gray-500">
+                                        <i class="fas fa-calendar mr-1"></i>
+                                        {{ batch.start_date.strftime('%b %d, %Y') if batch.start_date else 'TBD' }}
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-sm text-gray-500 italic">No batches available for this bootcamp</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end space-x-4 pt-6 mt-6 border-t border-gray-200">
+                <a href="{{ url_for('crm.list_enrollments') }}" 
+                   class="px-6 py-3 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200">
+                    Cancel
+                </a>
+                <button type="submit" 
+                        class="inline-flex items-center px-6 py-3 border border-transparent rounded-xl text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-lg transition-all duration-200">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Enroll Student
+                </button>
+            </div>
+            {% else %}
+            <div class="text-center py-8">
+                <i class="fas fa-exclamation-circle text-gray-300 text-5xl mb-4"></i>
+                <p class="text-gray-600">No bootcamps available. Please create a bootcamp first.</p>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Help Text -->
+    <div class="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4 animate-slide-up" style="animation-delay: 0.2s">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <i class="fas fa-info-circle text-blue-600 text-xl"></i>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-blue-800">Quick Tips</h3>
+                <div class="mt-2 text-sm text-blue-700">
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Students can be enrolled in multiple bootcamp batches simultaneously</li>
+                        <li>Already enrolled batches are marked and cannot be selected again</li>
+                        <li>Select all the batches you want to enroll the student in at once</li>
+                        <li>Enrollment status will be set to "Active" by default</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

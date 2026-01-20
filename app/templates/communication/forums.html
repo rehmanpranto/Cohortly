@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Discussion Forums - Cohortly{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8 flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">
+                <i class="fas fa-comments text-red-600 mr-3"></i>
+                Discussion Forums
+            </h1>
+            <p class="mt-2 text-gray-600">Collaborate and discuss with your batch</p>
+        </div>
+        {% if current_user.role.value in ['admin', 'instructor'] %}
+        <a href="{{ url_for('communication.create_forum') }}" class="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700">
+            <i class="fas fa-plus mr-2"></i>Create Forum
+        </a>
+        {% endif %}
+    </div>
+
+    {% if forums %}
+    <div class="space-y-4">
+        {% for forum in forums %}
+        <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">{{ forum.title }}</h3>
+                    <p class="text-gray-600 mb-4">{{ forum.description }}</p>
+                    
+                    <div class="flex items-center space-x-4 text-sm text-gray-500">
+                        <span>
+                            <i class="fas fa-users mr-1"></i>
+                            {{ forum.batch.name }}
+                        </span>
+                        <span>
+                            <i class="fas fa-calendar mr-1"></i>
+                            {{ forum.created_at.strftime('%b %d, %Y') }}
+                        </span>
+                        <span>
+                            <i class="fas fa-user mr-1"></i>
+                            {{ forum.created_by.full_name if forum.created_by else 'System' }}
+                        </span>
+                    </div>
+                </div>
+                <a href="{{ url_for('communication.view_forum', forum_id=forum.id) }}" 
+                   class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                    View Forum
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white rounded-lg shadow p-12 text-center">
+        <i class="fas fa-comments text-gray-300 text-6xl mb-4"></i>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">No Forums Yet</h3>
+        <p class="text-gray-600">Forums will appear here once they're created</p>
+        {% if current_user.role.value in ['admin', 'instructor'] %}
+        <a href="{{ url_for('communication.create_forum') }}" class="inline-block mt-4 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700">
+            <i class="fas fa-plus mr-2"></i>Create First Forum
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="mt-8">
+        <a href="{{ url_for('analytics.admin_dashboard') }}" class="text-indigo-600 hover:text-indigo-800">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

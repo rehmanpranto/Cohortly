@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block title %}{{ student.full_name }} - Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-6">
+        <a href="{{ url_for('student_lifecycle.at_risk_students') }}" class="text-indigo-600 hover:text-indigo-800">
+            <i class="fas fa-arrow-left mr-2"></i>Back
+        </a>
+    </div>
+
+    <!-- Student Header -->
+    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 mb-6">
+        <div class="flex items-start">
+            <div class="h-24 w-24 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center text-white font-bold text-3xl flex-shrink-0">
+                {{ student.full_name[0].upper() }}
+            </div>
+            <div class="ml-6 flex-1">
+                <h1 class="text-3xl font-bold text-gray-900">{{ student.full_name }}</h1>
+                <p class="text-gray-600 mt-1">{{ student.email }}</p>
+                <div class="mt-4 flex items-center space-x-6">
+                    <!-- RAG Rating Badge -->
+                    {% if profile.rag_rating %}
+                        {% if profile.rag_rating.value == 'red' %}
+                        <span class="px-4 py-2 bg-red-100 text-red-800 font-semibold rounded-lg">
+                            <i class="fas fa-exclamation-circle mr-2"></i>RED - Needs Intervention
+                        </span>
+                        {% elif profile.rag_rating.value == 'amber' %}
+                        <span class="px-4 py-2 bg-yellow-100 text-yellow-800 font-semibold rounded-lg">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>AMBER - Needs Attention
+                        </span>
+                        {% else %}
+                        <span class="px-4 py-2 bg-green-100 text-green-800 font-semibold rounded-lg">
+                            <i class="fas fa-check-circle mr-2"></i>GREEN - On Track
+                        </span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            <div>
+                <a href="{{ url_for('student_lifecycle.add_performance_review', student_id=student.id) }}" 
+                   class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                    <i class="fas fa-plus mr-2"></i>Add Review
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600">Attendance</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ "%.0f"|format(attendance_percentage) }}%</p>
+                </div>
+                <div class="p-3 bg-blue-100 rounded-lg">
+                    <i class="fas fa-calendar-check text-blue-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600">Avg Performance</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ "%.1f"|format(avg_score) }}%</p>
+                </div>
+                <div class="p-3 bg-green-100 rounded-lg">
+                    <i class="fas fa-chart-line text-green-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600">Enrollments</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ enrollments|length }}</p>
+                </div>
+                <div class="p-3 bg-purple-100 rounded-lg">
+                    <i class="fas fa-graduation-cap text-purple-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600">Reviews</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ reviews|length }}</p>
+                </div>
+                <div class="p-3 bg-yellow-100 rounded-lg">
+                    <i class="fas fa-star text-yellow-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Current Enrollments -->
+        <div class="bg-white rounded-lg shadow-lg">
+            <div class="px-6 py-4 bg-gray-50 border-b">
+                <h2 class="text-lg font-semibold text-gray-900">Current Enrollments</h2>
+            </div>
+            <div class="p-6">
+                {% if enrollments %}
+                <div class="space-y-4">
+                    {% for enrollment in enrollments %}
+                    <div class="border rounded-lg p-4">
+                        <h3 class="font-semibold text-gray-900">{{ enrollment.batch.bootcamp.name }}</h3>
+                        <p class="text-sm text-gray-600">{{ enrollment.batch.name }}</p>
+                        <div class="mt-2 flex items-center justify-between">
+                            <span class="text-sm text-gray-500">Progress: {{ enrollment.progress }}%</span>
+                            <div class="w-32 bg-gray-200 rounded-full h-2">
+                                <div class="bg-indigo-600 h-2 rounded-full" style="width: {{ enrollment.progress }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-gray-500 text-center py-8">No active enrollments</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Recent Submissions -->
+        <div class="bg-white rounded-lg shadow-lg">
+            <div class="px-6 py-4 bg-gray-50 border-b">
+                <h2 class="text-lg font-semibold text-gray-900">Recent Submissions</h2>
+            </div>
+            <div class="p-6">
+                {% if recent_submissions %}
+                <div class="space-y-3">
+                    {% for submission in recent_submissions[:5] %}
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">{{ submission.assignment.title }}</p>
+                            <p class="text-xs text-gray-500">{{ submission.submitted_at.strftime('%b %d, %Y') }}</p>
+                        </div>
+                        {% if submission.grade %}
+                        <span class="text-lg font-bold text-gray-900">{{ "%.0f"|format(submission.grade.score) }}%</span>
+                        {% else %}
+                        <span class="text-sm text-gray-500">Pending</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-gray-500 text-center py-8">No submissions yet</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Reviews -->
+    <div class="mt-6 bg-white rounded-lg shadow-lg">
+        <div class="px-6 py-4 bg-gray-50 border-b">
+            <h2 class="text-lg font-semibold text-gray-900">Performance Reviews</h2>
+        </div>
+        <div class="p-6">
+            {% if reviews %}
+            <div class="space-y-4">
+                {% for review in reviews %}
+                <div class="border-l-4 {% if review.rating.value == 'red' %}border-red-500{% elif review.rating.value == 'amber' %}border-yellow-500{% else %}border-green-500{% endif %} pl-4 py-3">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <h3 class="font-semibold text-gray-900">{{ review.review_date.strftime('%B %d, %Y') }}</h3>
+                                {% if review.rating.value == 'red' %}
+                                <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded">RED</span>
+                                {% elif review.rating.value == 'amber' %}
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded">AMBER</span>
+                                {% else %}
+                                <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded">GREEN</span>
+                                {% endif %}
+                            </div>
+                            <p class="text-sm text-gray-700 mb-2">{{ review.comments }}</p>
+                            {% if review.action_items %}
+                            <div class="mt-2">
+                                <p class="text-xs font-semibold text-gray-700">Action Items:</p>
+                                <p class="text-xs text-gray-600">{{ review.action_items }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="text-right ml-4">
+                            <p class="text-xs text-gray-500">By {{ review.reviewer.full_name }}</p>
+                            {% if review.next_review_date %}
+                            <p class="text-xs text-gray-500 mt-1">Next: {{ review.next_review_date.strftime('%b %d') }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-gray-500 text-center py-8">No performance reviews yet</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

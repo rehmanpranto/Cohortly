@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}{{ bootcamp.title }} - Cohortly{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Breadcrumb -->
+    <nav class="flex mb-8" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-4">
+            <li>
+                <a href="{{ url_for('lms.student_dashboard') }}" class="text-gray-400 hover:text-gray-500">
+                    <i class="fas fa-home"></i>
+                </a>
+            </li>
+            <li>
+                <div class="flex items-center">
+                    <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                    <span class="text-gray-900 font-medium">{{ bootcamp.title }}</span>
+                </div>
+            </li>
+        </ol>
+    </nav>
+
+    <!-- Batch Header -->
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
+        <div class="px-4 py-5 sm:px-6">
+            <h1 class="text-3xl font-bold text-gray-900">{{ bootcamp.title }}</h1>
+            <p class="mt-2 text-gray-600">{{ bootcamp.description }}</p>
+            <div class="mt-4 flex items-center space-x-4">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                    {{ batch.status.value }}
+                </span>
+                <span class="text-sm text-gray-500">
+                    <i class="fas fa-calendar mr-2"></i>
+                    {{ batch.start_date.strftime('%B %d, %Y') }} - {{ batch.end_date.strftime('%B %d, %Y') }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Curriculum -->
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+        <div class="px-4 py-5 sm:px-6">
+            <h2 class="text-xl font-semibold text-gray-900">Course Curriculum</h2>
+        </div>
+        <div class="border-t border-gray-200">
+            {% if modules %}
+                {% for module in modules %}
+                <div class="border-b border-gray-200 last:border-b-0">
+                    <div class="px-4 py-4 sm:px-6 bg-gray-50">
+                        <h3 class="text-lg font-medium text-gray-900">
+                            Module {{ module.order_index }}: {{ module.title }}
+                        </h3>
+                        <p class="mt-1 text-sm text-gray-500">{{ module.description }}</p>
+                    </div>
+                    
+                    {% if module.lessons %}
+                    <ul class="divide-y divide-gray-200">
+                        {% for lesson in module.lessons %}
+                        <li class="px-4 py-4 sm:px-6 hover:bg-gray-50">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i class="fas fa-{% if lesson.content_type.value == 'video' %}video{% elif lesson.content_type.value == 'article' %}file-alt{% elif lesson.content_type.value == 'quiz' %}question-circle{% else %}book{% endif %} text-gray-400 mr-3"></i>
+                                    <div>
+                                        <h4 class="text-sm font-medium text-gray-900">{{ lesson.title }}</h4>
+                                        <p class="text-sm text-gray-500">{{ lesson.content_type.value }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    {% if lesson.is_published %}
+                                        <a href="#" class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200">
+                                            Start <i class="fas fa-play ml-2"></i>
+                                        </a>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-gray-100 text-gray-500">
+                                            Coming Soon
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <div class="px-4 py-4 sm:px-6 text-sm text-gray-500">
+                        No lessons available yet.
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="px-4 py-5 sm:px-6 text-center text-gray-500">
+                <p>No curriculum available yet. Check back soon!</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

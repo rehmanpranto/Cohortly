@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Surveys - Cohortly{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8 flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">
+                <i class="fas fa-poll text-indigo-600 mr-3"></i>
+                Surveys & Feedback
+            </h1>
+            <p class="mt-2 text-gray-600">Manage instructor evaluations and course feedback</p>
+        </div>
+        <a href="{{ url_for('communication.create_survey') }}" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+            <i class="fas fa-plus mr-2"></i>Create Survey
+        </a>
+    </div>
+
+    {% if surveys %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for survey in surveys %}
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="flex items-start justify-between mb-4">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900">{{ survey.title }}</h3>
+                    <span class="inline-block mt-2 px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-semibold">
+                        {{ survey.survey_type.value.replace('_', ' ').title() }}
+                    </span>
+                </div>
+                {% if survey.is_active %}
+                <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">Active</span>
+                {% else %}
+                <span class="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-semibold">Closed</span>
+                {% endif %}
+            </div>
+
+            <p class="text-gray-600 text-sm mb-4">{{ survey.description or 'No description' }}</p>
+
+            <div class="space-y-2 mb-4 text-sm text-gray-500">
+                <div class="flex items-center">
+                    <i class="fas fa-users mr-2"></i>
+                    <span>{{ survey.batch.name }}</span>
+                </div>
+                {% if survey.instructor %}
+                <div class="flex items-center">
+                    <i class="fas fa-user mr-2"></i>
+                    <span>{{ survey.instructor.full_name }}</span>
+                </div>
+                {% endif %}
+                {% if survey.is_anonymous %}
+                <div class="flex items-center">
+                    <i class="fas fa-user-secret mr-2"></i>
+                    <span>Anonymous responses</span>
+                </div>
+                {% endif %}
+                <div class="flex items-center">
+                    <i class="fas fa-comment-dots mr-2"></i>
+                    <span>{{ survey.responses|length }} responses</span>
+                </div>
+            </div>
+
+            <a href="{{ url_for('communication.survey_results', survey_id=survey.id) }}" 
+               class="block w-full px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-center">
+                View Results
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white rounded-lg shadow p-12 text-center">
+        <i class="fas fa-poll text-gray-300 text-6xl mb-4"></i>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">No Surveys Yet</h3>
+        <p class="text-gray-600 mb-4">Create surveys to collect feedback from students</p>
+        <a href="{{ url_for('communication.create_survey') }}" class="inline-block px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+            <i class="fas fa-plus mr-2"></i>Create First Survey
+        </a>
+    </div>
+    {% endif %}
+
+    <div class="mt-8">
+        <a href="{{ url_for('analytics.admin_dashboard') }}" class="text-indigo-600 hover:text-indigo-800">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

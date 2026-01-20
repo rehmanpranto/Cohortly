@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Messages - Cohortly{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8 flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">
+                <i class="fas fa-inbox text-pink-600 mr-3"></i>
+                Messages
+            </h1>
+            {% if unread_count > 0 %}
+            <p class="mt-2 text-gray-600">You have <span class="font-semibold text-pink-600">{{ unread_count }}</span> unread messages</p>
+            {% endif %}
+        </div>
+        <a href="{{ url_for('communication.send_message') }}" class="px-6 py-3 bg-pink-600 text-white rounded-lg hover:bg-pink-700">
+            <i class="fas fa-paper-plane mr-2"></i>New Message
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Inbox -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="px-6 py-4 bg-gray-50 border-b">
+                    <h2 class="text-lg font-semibold text-gray-900">Inbox</h2>
+                </div>
+                <div class="divide-y">
+                    {% if messages %}
+                        {% for message in messages %}
+                        <a href="{{ url_for('communication.view_message', message_id=message.id) }}" 
+                           class="block hover:bg-gray-50 px-6 py-4 {% if not message.is_read %}bg-blue-50{% endif %}">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="h-10 w-10 rounded-full bg-gradient-to-br from-pink-400 to-red-500 flex items-center justify-center text-white font-semibold">
+                                        {{ message.sender.full_name[0].upper() }}
+                                    </div>
+                                </div>
+                                <div class="ml-4 flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="text-sm font-semibold text-gray-900">{{ message.sender.full_name }}</h3>
+                                        <span class="text-xs text-gray-500">{{ message.created_at.strftime('%b %d') }}</span>
+                                    </div>
+                                    <p class="text-sm text-gray-700 font-medium mt-1">{{ message.subject or 'No Subject' }}</p>
+                                    <p class="text-sm text-gray-500 mt-1 line-clamp-2">{{ message.message[:100] }}...</p>
+                                </div>
+                                {% if not message.is_read %}
+                                <div class="ml-2">
+                                    <span class="inline-block w-2 h-2 bg-blue-500 rounded-full"></span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </a>
+                        {% endfor %}
+                    {% else %}
+                        <div class="px-6 py-12 text-center">
+                            <i class="fas fa-inbox text-gray-300 text-5xl mb-3"></i>
+                            <p class="text-gray-500">No messages yet</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sent Messages -->
+        <div>
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="px-6 py-4 bg-gray-50 border-b">
+                    <h2 class="text-lg font-semibold text-gray-900">Sent</h2>
+                </div>
+                <div class="divide-y max-h-96 overflow-y-auto">
+                    {% if sent_messages %}
+                        {% for message in sent_messages[:5] %}
+                        <a href="{{ url_for('communication.view_message', message_id=message.id) }}" 
+                           class="block hover:bg-gray-50 px-6 py-3">
+                            <div class="flex items-start">
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-900">To: {{ message.recipient.full_name }}</p>
+                                    <p class="text-xs text-gray-500 mt-1">{{ message.subject or 'No Subject' }}</p>
+                                    <p class="text-xs text-gray-400 mt-1">{{ message.created_at.strftime('%b %d, %H:%M') }}</p>
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    {% else %}
+                        <div class="px-6 py-8 text-center">
+                            <p class="text-sm text-gray-500">No sent messages</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-8">
+        <a href="{{ url_for('analytics.admin_dashboard') }}" class="text-indigo-600 hover:text-indigo-800">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Create New Lead - Cohortly{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8 animate-slide-up">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-4xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                    Create New Lead
+                </h1>
+                <p class="mt-2 text-gray-600 text-lg">Add a new lead to the CRM system</p>
+            </div>
+            <a href="{{ url_for('crm.list_leads') }}" 
+               class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 shadow-sm transition-all duration-200">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Leads
+            </a>
+        </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="bg-white/80 backdrop-blur-lg shadow-lg rounded-2xl border border-gray-200/50 overflow-hidden animate-scale-in">
+        <div class="px-8 py-6 border-b border-gray-200">
+            <h3 class="text-lg leading-6 font-semibold text-gray-900">
+                <i class="fas fa-user-plus mr-2 text-blue-500"></i>
+                Lead Information
+            </h3>
+        </div>
+
+        <form method="POST" action="{{ url_for('crm.create_lead') }}" class="px-8 py-6 space-y-6">
+            <!-- Full Name -->
+            <div>
+                <label for="full_name" class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-user mr-1 text-gray-400"></i>
+                    Full Name <span class="text-red-500">*</span>
+                </label>
+                <input type="text" 
+                       name="full_name" 
+                       id="full_name" 
+                       required
+                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                       placeholder="Enter lead's full name">
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-envelope mr-1 text-gray-400"></i>
+                    Email Address <span class="text-red-500">*</span>
+                </label>
+                <input type="email" 
+                       name="email" 
+                       id="email" 
+                       required
+                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                       placeholder="lead@example.com">
+            </div>
+
+            <!-- Phone -->
+            <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-phone mr-1 text-gray-400"></i>
+                    Phone Number
+                </label>
+                <input type="tel" 
+                       name="phone" 
+                       id="phone"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                       placeholder="+880 1XXX-XXXXXX">
+            </div>
+
+            <!-- Source -->
+            <div>
+                <label for="source" class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-bullhorn mr-1 text-gray-400"></i>
+                    Lead Source
+                </label>
+                <select name="source" 
+                        id="source"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+                    <option value="">Select a source</option>
+                    <option value="website">Website</option>
+                    <option value="facebook">Facebook</option>
+                    <option value="instagram">Instagram</option>
+                    <option value="linkedin">LinkedIn</option>
+                    <option value="referral">Referral</option>
+                    <option value="email_campaign">Email Campaign</option>
+                    <option value="google_ads">Google Ads</option>
+                    <option value="direct">Direct Contact</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <!-- Status -->
+            <div>
+                <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-flag mr-1 text-gray-400"></i>
+                    Status <span class="text-red-500">*</span>
+                </label>
+                <select name="status" 
+                        id="status"
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+                    <option value="new" selected>New</option>
+                    <option value="contacted">Contacted</option>
+                    <option value="qualified">Qualified</option>
+                    <option value="proposal">Proposal Sent</option>
+                    <option value="negotiation">In Negotiation</option>
+                    <option value="converted">Converted</option>
+                    <option value="lost">Lost</option>
+                </select>
+            </div>
+
+            <!-- Notes -->
+            <div>
+                <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-sticky-note mr-1 text-gray-400"></i>
+                    Notes
+                </label>
+                <textarea name="notes" 
+                          id="notes" 
+                          rows="4"
+                          class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                          placeholder="Add any additional notes about this lead..."></textarea>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end space-x-4 pt-4 border-t border-gray-200">
+                <a href="{{ url_for('crm.list_leads') }}" 
+                   class="px-6 py-3 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200">
+                    Cancel
+                </a>
+                <button type="submit" 
+                        class="inline-flex items-center px-6 py-3 border border-transparent rounded-xl text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-lg transition-all duration-200">
+                    <i class="fas fa-save mr-2"></i>
+                    Create Lead
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Help Text -->
+    <div class="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4 animate-slide-up" style="animation-delay: 0.2s">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <i class="fas fa-info-circle text-blue-600 text-xl"></i>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-blue-800">Quick Tips</h3>
+                <div class="mt-2 text-sm text-blue-700">
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Make sure the email address is valid and unique</li>
+                        <li>Add detailed notes to help track the lead's journey</li>
+                        <li>Select the appropriate source to track marketing effectiveness</li>
+                        <li>Update the status as you progress with the lead</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

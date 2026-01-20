@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Cohortly{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full">
+        <!-- Logo and Title -->
+        <div class="text-center mb-8 animate-slide-up">
+            <div class="mx-auto mb-4 flex justify-center">
+                <!-- Cohortly Logo -->
+                <svg width="80" height="80" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-2xl transform hover:scale-110 transition-transform duration-300">
+                    <!-- Background circle -->
+                    <circle cx="60" cy="60" r="58" fill="url(#grad1)" opacity="0.1"/>
+                    
+                    <!-- Bottom Chevron (Dark Blue) -->
+                    <path d="M30 80 L60 50 L90 80 L60 65 Z" fill="#1e40af"/>
+                    <circle cx="60" cy="80" r="6" fill="white"/>
+                    
+                    <!-- Middle Chevron (Blue) -->
+                    <path d="M30 60 L60 30 L90 60 L60 45 Z" fill="#2563eb"/>
+                    <circle cx="60" cy="60" r="6" fill="white"/>
+                    
+                    <!-- Top Chevron (Cyan/Teal) -->
+                    <path d="M30 40 L60 10 L90 40 L60 25 Z" fill="#14b8a6"/>
+                    <circle cx="60" cy="40" r="6" fill="white"/>
+                    
+                    <defs>
+                        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#4f46e5;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <h2 class="text-4xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                Join Cohortly
+            </h2>
+            <p class="mt-2 text-sm text-gray-600">
+                Create your account and start your learning journey
+            </p>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="bg-white/80 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-gray-200/50 animate-scale-in">
+            <form method="POST" action="{{ url_for('auth.register') }}" class="space-y-5">
+                {{ form.hidden_tag() }}
+                
+                <!-- Full Name -->
+                <div>
+                    <label for="full_name" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-user text-blue-500 mr-2"></i>Full Name
+                    </label>
+                    {{ form.full_name(class="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-blue-300", placeholder="John Doe") }}
+                    {% if form.full_name.errors %}
+                        <div class="text-red-500 text-sm mt-2 animate-slide-down">
+                            {% for error in form.full_name.errors %}
+                                <p><i class="fas fa-exclamation-circle mr-1"></i>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Email Address -->
+                <div>
+                    <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-envelope text-blue-500 mr-2"></i>Email Address
+                    </label>
+                    {{ form.email(class="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-blue-300", placeholder="john@example.com") }}
+                    {% if form.email.errors %}
+                        <div class="text-red-500 text-sm mt-2 animate-slide-down">
+                            {% for error in form.email.errors %}
+                                <p><i class="fas fa-exclamation-circle mr-1"></i>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Phone Number -->
+                <div>
+                    <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-phone text-blue-500 mr-2"></i>Phone Number
+                    </label>
+                    {{ form.phone(class="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-blue-300", placeholder="+1 (555) 123-4567") }}
+                    {% if form.phone.errors %}
+                        <div class="text-red-500 text-sm mt-2 animate-slide-down">
+                            {% for error in form.phone.errors %}
+                                <p><i class="fas fa-exclamation-circle mr-1"></i>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Password -->
+                <div>
+                    <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-lock text-blue-500 mr-2"></i>Password
+                    </label>
+                    {{ form.password(class="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-blue-300", placeholder="••••••••") }}
+                    {% if form.password.errors %}
+                        <div class="text-red-500 text-sm mt-2 animate-slide-down">
+                            {% for error in form.password.errors %}
+                                <p><i class="fas fa-exclamation-circle mr-1"></i>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-xs text-gray-500 mt-2">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Must be at least 8 characters long
+                        </p>
+                    {% endif %}
+                </div>
+                
+                <!-- Confirm Password -->
+                <div>
+                    <label for="confirm_password" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-check-circle text-blue-500 mr-2"></i>Confirm Password
+                    </label>
+                    {{ form.confirm_password(class="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-blue-300", placeholder="••••••••") }}
+                    {% if form.confirm_password.errors %}
+                        <div class="text-red-500 text-sm mt-2 animate-slide-down">
+                            {% for error in form.confirm_password.errors %}
+                                <p><i class="fas fa-exclamation-circle mr-1"></i>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Terms and Conditions -->
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input type="checkbox" id="terms" name="terms" required class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer">
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label for="terms" class="text-gray-600 cursor-pointer hover:text-gray-900 transition-colors">
+                            I agree to the <a href="#" class="font-medium text-blue-600 hover:text-blue-500">Terms and Conditions</a> and <a href="#" class="font-medium text-blue-600 hover:text-blue-500">Privacy Policy</a>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-2">
+                    {{ form.submit(class="btn-ripple group relative w-full flex justify-center items-center py-3 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200") }}
+                </div>
+            </form>
+            
+            <!-- Divider -->
+            <div class="mt-6">
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-4 bg-white text-gray-500 font-medium">Already have an account?</span>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <a href="{{ url_for('auth.login') }}" class="w-full inline-flex justify-center items-center py-3 px-4 border-2 border-blue-300 rounded-xl shadow-sm text-sm font-semibold text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 hover:border-blue-400 group">
+                        <i class="fas fa-sign-in-alt mr-2 transform group-hover:-translate-x-1 transition-transform"></i>
+                        Sign In Instead
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trust badges -->
+        <div class="mt-8 text-center animate-fade-in">
+            <p class="text-xs text-gray-500 mb-4">Join thousands of students learning with us</p>
+            <div class="flex justify-center items-center space-x-8 text-gray-400">
+                <div class="flex flex-col items-center group cursor-pointer">
+                    <i class="fas fa-shield-alt text-3xl mb-1 group-hover:text-blue-500 transition-colors"></i>
+                    <span class="text-xs">Secure</span>
+                </div>
+                <div class="flex flex-col items-center group cursor-pointer">
+                    <i class="fas fa-users text-3xl mb-1 group-hover:text-blue-500 transition-colors"></i>
+                    <span class="text-xs">Community</span>
+                </div>
+                <div class="flex flex-col items-center group cursor-pointer">
+                    <i class="fas fa-certificate text-3xl mb-1 group-hover:text-blue-500 transition-colors"></i>
+                    <span class="text-xs">Certified</span>
+                </div>
+                <div class="flex flex-col items-center group cursor-pointer">
+                    <i class="fas fa-graduation-cap text-3xl mb-1 group-hover:text-blue-500 transition-colors"></i>
+                    <span class="text-xs">Quality</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

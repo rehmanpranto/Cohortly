@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}At-Risk Students - Cohortly{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">
+            <i class="fas fa-exclamation-triangle text-red-600 mr-3"></i>
+            At-Risk Students
+        </h1>
+        <p class="mt-2 text-gray-600">Students who need immediate attention or intervention</p>
+    </div>
+
+    <!-- RED Status Students -->
+    {% if red_students %}
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold text-red-600 mb-4">
+            <span class="inline-block w-4 h-4 bg-red-500 rounded-full mr-2"></span>
+            RED - Immediate Intervention Required ({{ red_students|length }})
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for student_data in red_students %}
+            <div class="bg-white rounded-lg shadow-lg border-l-4 border-red-500 p-6">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-center">
+                        <div class="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold text-xl">
+                            {{ student_data.user.full_name[0].upper() }}
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-900">{{ student_data.user.full_name }}</h3>
+                            <p class="text-sm text-gray-500">{{ student_data.user.email }}</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-xs font-semibold">RED</span>
+                </div>
+
+                <div class="mt-4 space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Performance Score:</span>
+                        <span class="font-semibold">{{ "%.1f"|format(student_data.profile.overall_performance_score) }}%</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Attendance:</span>
+                        <span class="font-semibold">{{ "%.1f"|format(student_data.profile.attendance_percentage) }}%</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Engagement:</span>
+                        <span class="font-semibold">{{ "%.1f"|format(student_data.profile.engagement_score) }}%</span>
+                    </div>
+                </div>
+
+                {% if student_data.latest_review %}
+                <div class="mt-4 p-3 bg-gray-50 rounded">
+                    <p class="text-xs text-gray-500 mb-1">Latest Review ({{ student_data.latest_review.review_date }})</p>
+                    <p class="text-sm text-gray-700">{{ student_data.latest_review.areas_for_improvement[:100] }}...</p>
+                </div>
+                {% endif %}
+
+                <div class="mt-4 flex space-x-2">
+                    <a href="{{ url_for('student_lifecycle.view_profile', student_id=student_data.user.id) }}" 
+                       class="flex-1 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-center text-sm">
+                        View Profile
+                    </a>
+                    <a href="{{ url_for('student_lifecycle.add_performance_review', student_id=student_data.user.id) }}" 
+                       class="flex-1 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 text-center text-sm">
+                        Add Review
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- AMBER Status Students -->
+    {% if amber_students %}
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold text-yellow-600 mb-4">
+            <span class="inline-block w-4 h-4 bg-yellow-500 rounded-full mr-2"></span>
+            AMBER - Needs Attention ({{ amber_students|length }})
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for student_data in amber_students %}
+            <div class="bg-white rounded-lg shadow-lg border-l-4 border-yellow-500 p-6">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-center">
+                        <div class="h-12 w-12 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 font-bold text-xl">
+                            {{ student_data.user.full_name[0].upper() }}
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-900">{{ student_data.user.full_name }}</h3>
+                            <p class="text-sm text-gray-500">{{ student_data.user.email }}</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-semibold">AMBER</span>
+                </div>
+
+                <div class="mt-4 space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Performance Score:</span>
+                        <span class="font-semibold">{{ "%.1f"|format(student_data.profile.overall_performance_score) }}%</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Attendance:</span>
+                        <span class="font-semibold">{{ "%.1f"|format(student_data.profile.attendance_percentage) }}%</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Engagement:</span>
+                        <span class="font-semibold">{{ "%.1f"|format(student_data.profile.engagement_score) }}%</span>
+                    </div>
+                </div>
+
+                {% if student_data.latest_review %}
+                <div class="mt-4 p-3 bg-gray-50 rounded">
+                    <p class="text-xs text-gray-500 mb-1">Latest Review ({{ student_data.latest_review.review_date }})</p>
+                    <p class="text-sm text-gray-700">{{ student_data.latest_review.areas_for_improvement[:100] }}...</p>
+                </div>
+                {% endif %}
+
+                <div class="mt-4 flex space-x-2">
+                    <a href="{{ url_for('student_lifecycle.view_profile', student_id=student_data.user.id) }}" 
+                       class="flex-1 px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 text-center text-sm">
+                        View Profile
+                    </a>
+                    <a href="{{ url_for('student_lifecycle.add_performance_review', student_id=student_data.user.id) }}" 
+                       class="flex-1 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 text-center text-sm">
+                        Add Review
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- No At-Risk Students -->
+    {% if not red_students and not amber_students %}
+    <div class="bg-white rounded-lg shadow p-12 text-center">
+        <i class="fas fa-check-circle text-green-500 text-6xl mb-4"></i>
+        <h3 class="text-2xl font-bold text-gray-900 mb-2">All Students Performing Well!</h3>
+        <p class="text-gray-600">No students currently need intervention or attention.</p>
+    </div>
+    {% endif %}
+
+    <div class="mt-8">
+        <a href="{{ url_for('analytics.admin_dashboard') }}" class="text-indigo-600 hover:text-indigo-800">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

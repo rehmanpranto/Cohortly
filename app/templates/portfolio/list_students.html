@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Student Portfolios - Cohortly{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">
+            <i class="fas fa-folder-open text-green-600 mr-3"></i>
+            Student Portfolios
+        </h1>
+        <p class="mt-2 text-gray-600">Browse student project showcases</p>
+    </div>
+
+    {% if students %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for student_data in students %}
+        <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+            <div class="flex items-center mb-4">
+                <div class="h-16 w-16 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white font-bold text-2xl">
+                    {{ student_data.user.full_name[0].upper() }}
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-lg font-bold text-gray-900">{{ student_data.user.full_name }}</h3>
+                    <p class="text-sm text-gray-500">{{ student_data.portfolio_count }} projects</p>
+                </div>
+            </div>
+
+            {% if student_data.profile.linkedin_url or student_data.profile.github_url %}
+            <div class="flex space-x-3 mb-4">
+                {% if student_data.profile.linkedin_url %}
+                <a href="{{ student_data.profile.linkedin_url }}" target="_blank" 
+                   class="text-blue-600 hover:text-blue-800">
+                    <i class="fab fa-linkedin text-xl"></i>
+                </a>
+                {% endif %}
+                {% if student_data.profile.github_url %}
+                <a href="{{ student_data.profile.github_url }}" target="_blank" 
+                   class="text-gray-800 hover:text-gray-600">
+                    <i class="fab fa-github text-xl"></i>
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <a href="{{ url_for('portfolio.view_student_portfolio', student_id=student_data.user.id) }}" 
+               class="block w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-center">
+                View Portfolio
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white rounded-lg shadow p-12 text-center">
+        <i class="fas fa-folder-open text-gray-300 text-6xl mb-4"></i>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">No Portfolios Yet</h3>
+        <p class="text-gray-600">Students will appear here once they add portfolio items</p>
+    </div>
+    {% endif %}
+
+    <div class="mt-8">
+        <a href="{{ url_for('analytics.admin_dashboard') }}" class="text-indigo-600 hover:text-indigo-800">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

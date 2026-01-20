@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}My Classes - Cohortly{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="mb-8 animate-slide-up">
+        <h1 class="text-4xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            <i class="fas fa-video text-blue-600"></i> My Classes
+        </h1>
+        <p class="mt-2 text-gray-600 text-lg">View your weekly class schedule and Zoom links</p>
+    </div>
+
+    <!-- Quick Navigation -->
+    <div class="mb-6 flex space-x-4">
+        <a href="{{ url_for('lms.student_dashboard') }}" 
+           class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Upcoming Classes -->
+    <div class="mb-8 animate-scale-in">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-2xl font-bold text-gray-900">
+                <i class="fas fa-calendar-day text-green-600 mr-2"></i>
+                Upcoming Classes
+            </h2>
+            <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">
+                {{ upcoming_classes|length }} Classes
+            </span>
+        </div>
+
+        {% if upcoming_classes %}
+        <div class="grid grid-cols-1 gap-4">
+            {% for class in upcoming_classes %}
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden card-hover">
+                <div class="p-6">
+                    <div class="flex items-start justify-between">
+                        <!-- Left side: Class info -->
+                        <div class="flex-1">
+                            <div class="flex items-center mb-2">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 mr-3">
+                                    Week {{ class.week_number }}
+                                </span>
+                                <span class="text-sm text-gray-600">
+                                    <i class="fas fa-layer-group mr-1"></i>
+                                    {{ class.batch.name }}
+                                </span>
+                            </div>
+                            
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">
+                                {{ class.topic }}
+                            </h3>
+                            
+                            {% if class.description %}
+                            <p class="text-gray-600 mb-4">{{ class.description }}</p>
+                            {% endif %}
+                            
+                            <!-- Date and Time -->
+                            <div class="flex items-center space-x-6 text-sm text-gray-700 mb-4">
+                                <div class="flex items-center">
+                                    <i class="fas fa-calendar text-blue-600 mr-2"></i>
+                                    <span class="font-semibold">{{ class.class_date.strftime('%B %d, %Y') }}</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-clock text-blue-600 mr-2"></i>
+                                    <span class="font-semibold">{{ class.class_time.strftime('%I:%M %p') }}</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-hourglass-half text-blue-600 mr-2"></i>
+                                    <span class="font-semibold">{{ class.duration_minutes }} mins</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Zoom Details -->
+                            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h4 class="font-bold text-gray-900 flex items-center">
+                                        <i class="fas fa-video text-blue-600 mr-2"></i>
+                                        Zoom Meeting Details
+                                    </h4>
+                                </div>
+                                
+                                {% if class.zoom_meeting_id %}
+                                <div class="mb-2">
+                                    <span class="text-xs font-semibold text-gray-600">Meeting ID:</span>
+                                    <span class="text-sm font-mono bg-white px-2 py-1 rounded ml-2">{{ class.zoom_meeting_id }}</span>
+                                </div>
+                                {% endif %}
+                                
+                                {% if class.zoom_passcode %}
+                                <div class="mb-3">
+                                    <span class="text-xs font-semibold text-gray-600">Passcode:</span>
+                                    <span class="text-sm font-mono bg-white px-2 py-1 rounded ml-2">{{ class.zoom_passcode }}</span>
+                                </div>
+                                {% endif %}
+                                
+                                <a href="{{ class.zoom_link }}" target="_blank"
+                                   class="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 group">
+                                    <i class="fas fa-external-link-alt mr-2"></i>
+                                    Join Zoom Class
+                                    <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 text-center">
+            <div class="mx-auto h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                <i class="fas fa-calendar-times text-gray-400 text-2xl"></i>
+            </div>
+            <p class="text-gray-600">No upcoming classes scheduled at the moment.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Past Classes with Recordings -->
+    <div class="animate-scale-in" style="animation-delay: 0.2s">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-2xl font-bold text-gray-900">
+                <i class="fas fa-history text-purple-600 mr-2"></i>
+                Past Classes & Recordings
+            </h2>
+            <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-semibold">
+                {{ past_classes|length }} Classes
+            </span>
+        </div>
+
+        {% if past_classes %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for class in past_classes %}
+            <div class="bg-white rounded-xl shadow border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
+                <div class="p-5">
+                    <div class="flex items-center mb-2">
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-700 mr-2">
+                            Week {{ class.week_number }}
+                        </span>
+                        <span class="text-xs text-gray-500">
+                            {{ class.class_date.strftime('%b %d, %Y') }}
+                        </span>
+                    </div>
+                    
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">
+                        {{ class.topic }}
+                    </h3>
+                    
+                    <p class="text-sm text-gray-600 mb-3">{{ class.batch.name }}</p>
+                    
+                    {% if class.recording_link %}
+                    <a href="{{ class.recording_link }}" target="_blank"
+                       class="inline-flex items-center px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors text-sm font-semibold group">
+                        <i class="fas fa-play-circle mr-2"></i>
+                        Watch Recording
+                        <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                    {% else %}
+                    <span class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-500 rounded-lg text-sm">
+                        <i class="fas fa-clock mr-2"></i>
+                        Recording not available
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 text-center">
+            <div class="mx-auto h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                <i class="fas fa-history text-gray-400 text-2xl"></i>
+            </div>
+            <p class="text-gray-600">No past classes yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

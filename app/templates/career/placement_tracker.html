@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Placement Tracker - Cohortly{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">
+            <i class="fas fa-chart-line text-orange-600 mr-3"></i>
+            Student Placement Tracker
+        </h1>
+        <p class="mt-2 text-gray-600">Monitor student job search and placement progress</p>
+    </div>
+
+    {% if students_data %}
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Target Role</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Applications</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Latest Offer</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for data in students_data %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-semibold">
+                                {{ data.user.full_name[0].upper() }}
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">{{ data.user.full_name }}</div>
+                                <div class="text-sm text-gray-500">{{ data.user.email }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            {% if data.profile.job_search_status == 'placed' %}bg-green-100 text-green-800
+                            {% elif data.profile.job_search_status == 'active' %}bg-blue-100 text-blue-800
+                            {% else %}bg-gray-100 text-gray-800{% endif %}">
+                            {{ data.profile.job_search_status or 'Not Started' }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ data.profile.target_role or '-' }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ data.total_applications }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {% if data.latest_offer %}
+                            <div>
+                                <div class="font-medium">{{ data.latest_offer.company_name }}</div>
+                                <div class="text-gray-500">{{ data.latest_offer.position }}</div>
+                                {% if data.latest_offer.offer_amount %}
+                                <div class="text-green-600">৳{{ "%0.2f"|format(data.latest_offer.offer_amount) }}</div>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <a href="{{ url_for('student_lifecycle.view_profile', student_id=data.user.id) }}" 
+                           class="text-indigo-600 hover:text-indigo-900">
+                            View Profile
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="bg-white rounded-lg shadow p-12 text-center">
+        <i class="fas fa-briefcase text-gray-300 text-6xl mb-4"></i>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">No Active Job Seekers</h3>
+        <p class="text-gray-600">Students will appear here once they start their job search</p>
+    </div>
+    {% endif %}
+
+    <div class="mt-8">
+        <a href="{{ url_for('analytics.admin_dashboard') }}" class="text-indigo-600 hover:text-indigo-800">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

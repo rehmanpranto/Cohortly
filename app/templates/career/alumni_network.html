@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Alumni Network - Cohortly{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8 flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">
+                <i class="fas fa-users text-yellow-600 mr-3"></i>
+                Alumni Network
+            </h1>
+            <p class="mt-2 text-gray-600">Connect with successful graduates</p>
+        </div>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('career.register_alumni') }}" class="px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700">
+            <i class="fas fa-user-plus mr-2"></i>Register as Alumni
+        </a>
+        {% endif %}
+    </div>
+
+    {% if alumni_data %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for data in alumni_data %}
+        <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+            <div class="flex items-center mb-4">
+                <div class="h-16 w-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-600 flex items-center justify-center text-white font-bold text-2xl">
+                    {{ data.user.full_name[0].upper() }}
+                </div>
+                <div class="ml-4 flex-1">
+                    <h3 class="text-lg font-bold text-gray-900">{{ data.user.full_name }}</h3>
+                    <p class="text-sm text-gray-500">Graduated {{ data.alumni.graduation_date.strftime('%b %Y') }}</p>
+                </div>
+            </div>
+
+            {% if data.alumni.current_company %}
+            <div class="mb-4">
+                <p class="text-sm font-semibold text-gray-900">{{ data.alumni.current_position }}</p>
+                <p class="text-sm text-gray-600">{{ data.alumni.current_company }}</p>
+                {% if data.alumni.current_salary_range %}
+                <p class="text-xs text-gray-500 mt-1">{{ data.alumni.current_salary_range }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <div class="flex space-x-2 mb-4">
+                {% if data.alumni.available_for_mentorship %}
+                <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">
+                    <i class="fas fa-chalkboard-teacher mr-1"></i>Mentoring
+                </span>
+                {% endif %}
+                {% if data.alumni.available_for_referrals %}
+                <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
+                    <i class="fas fa-handshake mr-1"></i>Referrals
+                </span>
+                {% endif %}
+            </div>
+
+            {% if data.alumni.testimonial %}
+            <div class="p-3 bg-gray-50 rounded mb-4">
+                <p class="text-sm text-gray-700 italic">"{{ data.alumni.testimonial[:100] }}..."</p>
+            </div>
+            {% endif %}
+
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('communication.send_message') }}?recipient={{ data.user.id }}" 
+               class="block w-full px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 text-center">
+                <i class="fas fa-envelope mr-2"></i>Contact
+            </a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white rounded-lg shadow p-12 text-center">
+        <i class="fas fa-users text-gray-300 text-6xl mb-4"></i>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">No Alumni Yet</h3>
+        <p class="text-gray-600">Alumni will appear here once graduates register</p>
+    </div>
+    {% endif %}
+
+    <div class="mt-8">
+        <a href="{{ url_for('analytics.admin_dashboard') }}" class="text-indigo-600 hover:text-indigo-800">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

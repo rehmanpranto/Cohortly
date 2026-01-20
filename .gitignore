@@ -1,44 +1,39 @@
-# Dependencies
-node_modules/
-package-lock.json
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
 
-# Environment variables
+# Flask
+instance/
+.webassets-cache
+
+# Database
+*.db
+*.sqlite
+
+# Environment
 .env
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Build outputs
-backend/dist/
-backend/build/
-frontend/.next/
-frontend/out/
-frontend/build/
-
-# Logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-
-# OS files
-.DS_Store
-Thumbs.db
-.vscode/
 
 # IDE
+.vscode/
 .idea/
 *.swp
 *.swo
-*~
 
-# Testing
-coverage/
-.nyc_output/
+# Uploads
+uploads/
+*.pdf
+*.zip
 
-# Misc
-.cache/
-.temp/
-.tmp/
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
