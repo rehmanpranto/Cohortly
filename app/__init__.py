@@ -52,6 +52,7 @@ def create_app(config_name=None):
     from app.portfolio import bp as portfolio_bp
     from app.career import bp as career_bp
     from app.communication import bp as communication_bp
+    from app.api.routes import api_bp
     
     app.register_blueprint(auth_bp)
     app.register_blueprint(crm_bp, url_prefix='/crm')
@@ -64,6 +65,7 @@ def create_app(config_name=None):
     app.register_blueprint(portfolio_bp)
     app.register_blueprint(career_bp)
     app.register_blueprint(communication_bp)
+    app.register_blueprint(api_bp)  # Mobile API
     
     # Root route
     @app.route('/')
